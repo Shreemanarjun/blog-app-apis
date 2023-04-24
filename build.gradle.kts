@@ -44,8 +44,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
 
-    //model mapper
-
+    //model mapper not supported fully in kotlin so using la-mapper for now
     implementation("com.github.labai.utils:la-mapper:0.2.1")
 
 }
