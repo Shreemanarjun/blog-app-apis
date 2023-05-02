@@ -6,3 +6,4 @@ data class ResourceNotFoundException(val resourceName: String, val fieldName: St
         return "$resourceName not found with $fieldName: $fieldValue"
     }
 }
+

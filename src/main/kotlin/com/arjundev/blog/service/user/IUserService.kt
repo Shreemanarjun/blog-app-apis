@@ -1,12 +1,13 @@
 package com.arjundev.blog.service.user
 
 import com.arjundev.blog.payloads.UserDto
+import org.springframework.data.domain.Pageable
 
 interface IUserService {
-    fun createUser(userDto:UserDto):UserDto
-    fun updateUser(userDto: UserDto,userId:Int):UserDto
-    fun getUserById(userId:Int):UserDto
-    fun getAllUser():List<UserDto>
-    fun deleteUser(userId:Int)
+    suspend fun createUser(userDto: UserDto): UserDto
+    suspend fun updateUser(userDto: UserDto, userId: Int): UserDto
+    suspend fun getUserById(userId: Int): UserDto
+    suspend fun getAllUser(pageable: Pageable): List<UserDto>
+    suspend fun deleteUser(userId: Int)
 
 }
