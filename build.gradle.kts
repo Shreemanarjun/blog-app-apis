@@ -8,6 +8,13 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
+    kotlin("plugin.allopen") version kotlinVersion
+}
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.Embeddable")
+    annotation("jakarta.persistence.MappedSuperclass")
 }
 
 group = "com.arjundev"
@@ -29,23 +36,22 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
-    annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-
+    //swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
-    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.5")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
-
+    // kotlin coroutines
     val coroutinesVersion = "1.6.4"
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
 
-    //model mapper not supported fully in kotlin so using la-mapper for now
-    implementation("com.github.labai.utils:la-mapper:0.2.1")
+        //
+    implementation("org.yaml:snakeyaml:2.0")
+
 
 }
 

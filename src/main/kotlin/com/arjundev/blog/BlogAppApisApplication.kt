@@ -9,5 +9,5 @@ import org.springframework.boot.runApplication
 class BlogAppApisApplication
 
 fun main(args: Array<String>) {
-    runApplication<BlogAppApisApplication>(*args)
+   runApplication<BlogAppApisApplication>(*args)
 }
