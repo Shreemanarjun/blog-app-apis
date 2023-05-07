@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.multipart.MultipartException
+import java.io.FileNotFoundException
 
 
 @ControllerAdvice
@@ -100,6 +102,20 @@ class GlobalExceptionHandler {
         return ResponseEntity(CustomValidationError(errors.toSet().toList()), HttpStatus.UNPROCESSABLE_ENTITY)
     }
 
+    @ExceptionHandler(MultipartException::class)
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    fun multipartExceptionHandler(ex: MultipartException): ResponseEntity<ProblemDetail> {
+        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_ACCEPTABLE, ex.message.toString()))
+            .build()
+    }
+
+    @ExceptionHandler(FileNotFoundException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    fun fileNotFoundExceptionHandler(ex: FileNotFoundException): ResponseEntity<ProblemDetail> {
+        return ResponseEntity.of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.message.toString())).build()
+    }
 
 }
+
+
 

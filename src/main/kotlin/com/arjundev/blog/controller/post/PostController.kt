@@ -1,22 +1,36 @@
 package com.arjundev.blog.controller.post
 
 import com.arjundev.blog.payloads.*
+import com.arjundev.blog.service.file.FileService
 import com.arjundev.blog.service.post.PostService
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.servlet.http.HttpServletResponse
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.util.StreamUtils
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.multipart.MultipartFile
 import java.net.URI
 
 @RestController
 @RequestMapping("/api/")
 @Tag(name = "Post")
 @Validated
-class PostController(@Autowired val postService: PostService) : IPostController {
+class PostController(
+    @Autowired val postService: PostService,
+    @Autowired val fileService: FileService,
+) :
+    IPostController {
+    @Value("\${project.images}")
+
+    lateinit var imagePath: String
+
     override suspend fun createPost(
         createPostRequest: CreatePostRequest,
         userId: Int,
@@ -69,6 +83,25 @@ class PostController(@Autowired val postService: PostService) : IPostController 
     ): ResponseEntity<PageableResponse<List<PostDto>>> {
         val postDtos = postService.searchPosts(keywords, pageable)
         return ResponseEntity.ok(postDtos)
+    }
+
+    override suspend fun uploadPostImage(
+        image: MultipartFile,
+        postId: Int
+    ): ResponseEntity<PostDto> {
+        val post = postService.getPostById(postId = postId)
+        post.imageName?.let { fileService.deleteExistingImage(imagePath, it) }
+        val filename = fileService.uploadImage(imagePath, image)
+        val updatePost = post.copy(imageName = filename)
+        val updatedPost = postService.updatePost(updatePost, postId)
+        return ResponseEntity.ok(updatedPost)
+    }
+
+    override suspend fun getPostImage(imageName: String, servletResponse: HttpServletResponse) {
+        val resource = fileService.getResource(imagePath, imageName)
+        servletResponse.contentType = MediaType.IMAGE_JPEG_VALUE
+        StreamUtils.copy(resource, servletResponse.outputStream)
+
     }
 
 

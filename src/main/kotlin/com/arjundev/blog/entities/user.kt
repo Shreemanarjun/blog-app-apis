@@ -8,7 +8,7 @@ class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    var id: Int?=null,
+    var id: Int? = null,
 
     var name: String,
 

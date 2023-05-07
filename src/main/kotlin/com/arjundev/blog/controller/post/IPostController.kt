@@ -1,12 +1,15 @@
 package com.arjundev.blog.controller.post
 
 import com.arjundev.blog.payloads.*
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 interface IPostController {
     @PostMapping("/user/{userId}/category/{categoryId}/posts")
@@ -30,7 +33,7 @@ interface IPostController {
     ): ResponseEntity<PageableResponse<List<PostDto>>>
 
     @GetMapping("/posts")
-    suspend fun getAllPost(@ParameterObject  pageable: Pageable): ResponseEntity<PageableResponse<List<PostDto>>>
+    suspend fun getAllPost(@ParameterObject pageable: Pageable): ResponseEntity<PageableResponse<List<PostDto>>>
 
     @GetMapping("/posts/{postId}")
     suspend fun getPostById(@PathVariable postId: Int): ResponseEntity<PostDto>
@@ -42,5 +45,20 @@ interface IPostController {
     suspend fun updatePost(@RequestBody @Valid postDto: PostDto, @PathVariable postId: Int): ResponseEntity<PostDto>
 
     @GetMapping("/posts/search/{keywords}")
-    suspend fun searchPosts(@PathVariable keywords: String,@ParameterObject  pageable: Pageable):ResponseEntity<PageableResponse<List<PostDto>>>
+    suspend fun searchPosts(
+        @PathVariable keywords: String,
+        @ParameterObject pageable: Pageable
+    ): ResponseEntity<PageableResponse<List<PostDto>>>
+
+    @PostMapping(
+        "/posts/image/upload/{postId}",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+    )
+    suspend fun uploadPostImage(
+        @RequestParam(required = true) image: MultipartFile,
+        @PathVariable postId: Int
+    ): ResponseEntity<PostDto>
+
+    @GetMapping("/posts/image/{imageName}", produces = [MediaType.IMAGE_JPEG_VALUE])
+    suspend fun getPostImage(@PathVariable imageName:String, servletResponse:HttpServletResponse)
 }

@@ -24,7 +24,9 @@ class Post(
     var category: Category? = null,
 
     @ManyToOne
-    var user: User? = null
+    var user: User? = null,
+    @OneToMany(mappedBy = "post", cascade = [CascadeType.ALL])
+    var comments: MutableSet<Comment>? = mutableSetOf()
 )
 
 
